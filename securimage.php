@@ -1280,7 +1280,7 @@ class Securimage
      *
      * @return bool true if the given code was correct, false if not.
      */
-    public function check($code)
+    public function check($code, $clear=true)
     {
         if (!is_string($code)) {
             trigger_error("The \$code parameter passed to Securimage::check() must be a string, " . gettype($code) . " given", E_USER_NOTICE);
@@ -1288,7 +1288,7 @@ class Securimage
         }
 
         $this->code_entered = $code;
-        $this->validate();
+        $this->validate($clear);
         return $this->correct_code;
     }
 
@@ -2606,7 +2606,7 @@ class Securimage
      *
      * @see Securimage::$correct_code 'correct_code' property
      */
-    protected function validate()
+    protected function validate($clear=true)
     {
         if (!is_string($this->code) || strlen($this->code) == 0) {
             $code = $this->getCode(true);
@@ -2647,11 +2647,13 @@ class Securimage
 
             if ((string)$code === (string)$code_entered) {
                 $this->correct_code = true;
-                if ($this->no_session != true) {
-                    $_SESSION['securimage_code_disp'] [$this->namespace] = '';
-                    $_SESSION['securimage_code_value'][$this->namespace] = '';
-                    $_SESSION['securimage_code_ctime'][$this->namespace] = '';
-                    $_SESSION['securimage_code_audio'][$this->namespace] = '';
+                if ($clear) {
+                    if ($this->no_session != true) {
+                        $_SESSION['securimage_code_disp'] [$this->namespace] = '';
+                        $_SESSION['securimage_code_value'][$this->namespace] = '';
+                        $_SESSION['securimage_code_ctime'][$this->namespace] = '';
+                        $_SESSION['securimage_code_audio'][$this->namespace] = '';
+                    }
                 }
                 $this->clearCodeFromDatabase();
             }
