@@ -2433,7 +2433,10 @@ class Securimage
         imagedestroy($this->im);
         restore_error_handler();
 
-        if (!$this->no_exit) exit;
+        if (!$this->no_exit) {
+            session_write_close();
+            exit;
+        }
     }
 
     /**
